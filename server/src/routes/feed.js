@@ -7,5 +7,6 @@ const route = express.Router();
 
 route.get("/posts", routeFeed.getPosts);
 route.post("/post", validator.vBody, routeFeed.postPost);
+route.get("/post/:postId", routeFeed.getPost);
 
 export default route;

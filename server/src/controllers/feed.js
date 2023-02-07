@@ -1,5 +1,6 @@
 import Post from "../models/post";
 import { validationResult } from "express-validator";
+import post from "../models/post";
 
 export function getPosts(req, res, next) {
   Post.find()
@@ -45,6 +46,28 @@ export function postPost(req, res, next) {
       res.status(200).json({
         message: "Post Created successfully",
         post: result,
+      });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+}
+
+export function getPost(req, res, next) {
+  const postId = req.params.postId;
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const err = new Error("could not find post");
+        err.statusCode = 422;
+        throw err;
+      }
+      res.status(200).json({
+        message: "post fetched",
+        post: post,
       });
     })
     .catch((err) => {
