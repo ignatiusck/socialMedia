@@ -9,4 +9,6 @@ route.get("/posts", routeFeed.getPosts);
 route.post("/post", validator.vBody, routeFeed.postPost);
 route.get("/post/:postId", routeFeed.getPost);
 
+route.delete("/post/:postId", routeFeed.deletePost);
+
 export default route;
