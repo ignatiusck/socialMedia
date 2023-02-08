@@ -4,12 +4,18 @@ import Post from "../models/post";
 import { validationResult } from "express-validator";
 
 export async function getPosts(req, res, next) {
+  const currentPage = req.query.page || 1;
+  const perPage = 3;
   try {
-    const post = await Post.find();
-    //console.log(result);
+    const totalItem = await Post.find().countDocuments();
+    const post = await Post.find()
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+    //console.log(post);
     res.status(200).json({
       message: "post fetched",
       posts: post,
+      totalItems: totalItem,
     });
   } catch (err) {
     if (!err.satusCode) {
