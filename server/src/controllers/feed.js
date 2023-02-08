@@ -73,3 +73,23 @@ export async function getPost(req, res, next) {
     next(err);
   }
 }
+
+export async function deletePost(req, res, next) {
+  const postId = req.params.postId;
+  try {
+    const post = await Post.findById(postId);
+    //console.log(post);
+    if (!post) {
+      const err = new Error("could not find post.");
+      err.statusCode = 404;
+      throw err;
+    }
+    await Post.findByIdAndRemove(postId);
+    res.status(200).json({ message: "Deleted post." });
+  } catch (err) {
+    if (err.statusCode) {
+      err.statusCode = 422;
+    }
+    next(err);
+  }
+}
