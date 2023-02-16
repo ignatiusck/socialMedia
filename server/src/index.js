@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import multer from "multer";
 
 import routeFeed from "./routes/feed";
+import routerAuth from "./routes/auth";
 
 const app = express();
 
@@ -32,19 +33,22 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+//app.use(bodyParser.json());
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed", routeFeed);
+app.use("/auth", routerAuth);
 
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  res.status(status).json({ message: message });
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
 });
 
 mongoose
