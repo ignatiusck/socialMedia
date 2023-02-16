@@ -27,7 +27,7 @@ export async function getPosts(req, res, next) {
 
 export async function postPost(req, res, next) {
   const err = validationResult(req);
-  if (!err.isEmpty) {
+  if (!err.isEmpty()) {
     const err = new Error("Validation failed");
     err.statusCode = 422;
     throw err;
@@ -40,6 +40,7 @@ export async function postPost(req, res, next) {
   const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
+  console.log(content);
   const post = new Post({
     title: title,
     content: content,
