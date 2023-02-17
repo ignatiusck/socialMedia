@@ -22,3 +22,5 @@ export const userInput = [
   body("name").trim().not().isEmpty(),
   body("password").trim().isLength({ min: 5 }),
 ];
+
+export const statusInput = [body("status").trim().not().isEmpty()];
