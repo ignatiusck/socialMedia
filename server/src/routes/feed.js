@@ -11,5 +11,7 @@ route.post("/post", isAuth, validator.postInput, routeFeed.postPost);
 route.get("/post/:postId", isAuth, routeFeed.getPost);
 route.put("/post/:postId", isAuth, validator.postInput, routeFeed.updatePost);
 route.delete("/post/:postId", isAuth, routeFeed.deletePost);
+route.get("/status", isAuth, routeFeed.getStatus);
+route.post("/user-status", isAuth, validator.statusInput, routeFeed.postStatus);
 
 export default route;

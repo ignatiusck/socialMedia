@@ -170,6 +170,52 @@ export async function updatePost(req, res, next) {
   }
 }
 
+export async function getStatus(req, res, next) {
+  const userId = req.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      const err = new Error("user not found");
+      err.statusCode = 403;
+      throw err;
+    }
+    const status = user.status;
+    res.status(200).json({
+      message: "status fetched",
+      status: status,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
+export async function postStatus(req, res, next) {
+  const userId = req.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      const err = new Error("user not found");
+      err.statusCode = 403;
+      throw err;
+    }
+    const status = req.body.status;
+    user.status = status;
+    await user.save();
+    res.status(200).json({
+      message: "status updated.",
+      status: status,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
 const clearImage = (filePath) => {
   filePath = path.join(__dirname, "..", filePath);
   fs.unlink(filePath, (err) => {
