@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import Post from "../models/post";
+import User from "../models/user";
 import { validationResult } from "express-validator";
 
 export async function getPosts(req, res, next) {
@@ -45,14 +46,20 @@ export async function postPost(req, res, next) {
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: { name: "chandrog" },
+    creator: req.userId,
   });
   try {
     const result = await post.save();
-    console.log(result);
+    const user = await User.findById(req.userId);
+    user.post.push(result);
+    await user.save();
     res.status(200).json({
       message: "Post Created successfully",
       post: result,
+      creator: {
+        _id: user._id,
+        name: user.name,
+      },
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -93,7 +100,16 @@ export async function deletePost(req, res, next) {
       err.statusCode = 404;
       throw err;
     }
+    if (post.creator.toString() !== req.userId) {
+      const err = new Error("not authorized!.");
+      err.statusCode = 403;
+      console.log("otw throw");
+      throw err;
+    }
     await Post.findByIdAndRemove(postId);
+    const user = await User.findById(req.userId);
+    user.post.pull(postId);
+    await user.save();
     res.status(200).json({ message: "Deleted post." });
   } catch (err) {
     if (err.statusCode) {
@@ -106,42 +122,51 @@ export async function deletePost(req, res, next) {
 export async function updatePost(req, res, next) {
   const postId = req.params.postId;
   const error = validationResult(req);
-  if (!error.isEmpty()) {
-    const err = new Error("Validation error, entered data is incorrect");
-    err.statusCode = 422;
-    throw err;
-  }
-  const title = req.body.title;
-  const content = req.body.content;
-  const imageUrl = req.body.image;
-  if (req.file) {
-    imageUrl = req.file.path;
-  }
-  if (!imageUrl) {
-    const err = new Error("No file picked");
-    err.statusCode = 422;
-    throw err;
-  }
   try {
+    if (!error.isEmpty()) {
+      const err = new Error("Validation error, entered data is incorrect");
+      err.statusCode = 422;
+      throw err;
+    }
+    const title = req.body.title;
+    const content = req.body.content;
+    const imageUrl = req.body.image;
+    if (req.file) {
+      imageUrl = req.file.path;
+    }
+    if (!imageUrl) {
+      const err = new Error("No file picked");
+      err.statusCode = 422;
+      throw err;
+    }
     const post = await Post.findById(postId);
     if (!post) {
       const err = new Error("Could not find error");
       err.statusCode = 404;
       throw err;
     }
+    if (post.creator.toString() !== req.userId) {
+      const err = new Error("not authorized!.");
+      err.statusCode = 403;
+      console.log("otw throw");
+      throw err;
+    }
+
     if (imageUrl !== post.imageUrl) {
       clearImage(post.imageUrl);
     }
     post.title = title;
     post.content = content;
     post.imageUrl = imageUrl;
+
     await post.save();
     res.status(200).json({ message: "post updated", post: post });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 422;
-      next(err);
+      console.log("otw next");
     }
+    next(err);
   }
 }
 
