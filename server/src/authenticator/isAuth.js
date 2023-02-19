@@ -10,7 +10,7 @@ async function isAuth(req, res, next) {
   const token = authHeader.split(" ")[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "supersecreat");
+    decodedToken = jwt.verify(token, `${process.env.JWT_TOKEN}`);
   } catch (err) {
     err.statusCode = 500;
     throw err;

@@ -1,0 +1,3 @@
+::1 - - [19/Feb/2023:10:56:23 +0000] "GET /feed/status HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+::1 - - [19/Feb/2023:10:56:23 +0000] "GET /feed/posts?page=1 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+::1 - - [19/Feb/2023:10:56:37 +0000] "POST /feed/post HTTP/1.1" 200 376 "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
