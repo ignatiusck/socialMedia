@@ -3,3 +3,4 @@ src/images
 nodemon.json
 .env
 src/log/access.log
+dist
