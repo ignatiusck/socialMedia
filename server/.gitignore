@@ -2,3 +2,4 @@ node_modules
 src/images
 nodemon.json
 .env
+src/log/access.log
